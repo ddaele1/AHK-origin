@@ -29,7 +29,7 @@ Originticket()
 Gui, Destroy
 Gui, Add, Text,, Welk scriptje wil je starten?
 Gui, Add, Button, gItTicket, IT tickets
-;Gui, Add, Button, gCaseTemplate, SC template
+Gui, Add, Button, gCaseTemplate, SC template
 Gui, Show
 }
 
@@ -99,6 +99,56 @@ Thank you!
 clipboard := Stringmob
 return
 }
+
+
+; Service case script
+
+CaseTemplate()
+{
+global
+Gui, Destroy
+Gui, Font, s12
+Gui, add, Text,, Technical issue
+Gui, Add, Edit, r10 w380 vTissue, 
+Gui, add, Text,, Steps taken :
+Gui, Add, Edit, r10 w380 vStaken,
+Gui, add, Text,, Conclusion : 
+Gui, Add, Edit, r10 w380 vConclusionCase, 
+Gui, Add, Button, gCopyCaseTemplate, COPY
+Gui, Add, Button, gClear, CLEAR
+Gui, Add, Button, gClose, CLOSE
+Gui, Show
+}
+
+Clear()
+{
+global
+GuiControl, ,Tissue
+GuiControl, ,Staken
+GuiControl, ,ConclusionCase
+Return
+}
+
+CopyCaseTemplate()
+{
+global
+Gui, Submit, NoHide
+
+stringCaseTemplate = 
+(
+Technical issue : 
+%Tissue%
+
+Steps taken :  
+%Staken%
+
+Conclusion / communication :
+%ConclusionCase% 
+)
+clipboard := stringCaseTemplate
+return
+}
+
 
 
 
