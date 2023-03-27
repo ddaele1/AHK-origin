@@ -42,6 +42,7 @@ ItTicket()
 global
 Gui, Destroy
 Gui, Add, Checkbox, vCoos, COOS?
+Gui, Add, Checkbox, vSheet, Sheet?
 Gui, Add, Text,, Telenet of BASE?
 Gui, Add, DropDownList, vTelbase, TELENET||BASE
 Gui, Add, Text,, Welke Service?
@@ -81,9 +82,23 @@ else
 Coos := ""
 }
 
+if (Sheet = 1)
+{
+	if (Coos = "/COOS"){
+	Sheet := " sheet"
+	}
+	else{
+	Sheet := "/sheet"
+	}
+}
+else
+{
+Sheet:= ""
+}
+
 Stringmob =
 (
-Origin%Coos%/%Telbase% %Service%/Non-Billing/%Klantennummer%/%Scid%/%Problemshort%
+Origin%Coos%%Sheet%/%Telbase% %Service%/Non-Billing/%Klantennummer%/%Scid%/%Problemshort%
 
 - Regarding customer: %Klantennummer%
 - customerlink BSS: %LinkBss%
