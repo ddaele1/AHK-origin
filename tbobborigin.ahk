@@ -22,6 +22,38 @@ Return
 }
 
 
+;Run Outlook scripts
+
+;Start outlook
+
+CheckOutlook(){
+Process, Exist, Outlook.exe
+If Not ErrorLevel
+{
+	Run, Outlook.exe	; You may need to specify the full path here.
+	WinWaitActive, ahk_exe Outlook.exe
+	sleep 2000
+	Msgbox, Wacht tot als Outlook is opgestart
+}
+}
+
+
+;Compose Mail
+
+CompMail(mailsubject, mailbody, ccmail, tomail, frommail){
+olMailItem := 0
+MailItem := ComObjActive("Outlook.Application").CreateItem(olMailItem)
+MailItem.BodyFormat := 2 ; olFormatHTML
+MailItem.SentOnBehalfOfName := frommail
+MailItem.TO := tomail
+MailItem.CC := ccmail
+MailItem.Subject := mailsubject
+MailItem.HTMLBody := mailbody
+MailItem.Display
+return
+}
+
+
 ; Hoofdmenu
 
 OriginTicket()
@@ -31,7 +63,101 @@ Gui, Add, Text,, Welk scriptje wil je starten?
 Gui, Add, Button, gItTicket, IT tickets
 Gui, Add, Button, gCaseTemplate, SC template
 Gui, Add, Button, gSms, SMS templates
+Gui, Add, Button, gMultiMail, Mail templates
+Gui, Add, Button, gFwVraag, Vragen Floorwalker
+Gui, Add, Button, gTrunkBox, Trunkboxen
+Gui, Add, Button, gVadeSpam, Spamcause zoeken in Putty
 Gui, Show
+}
+
+
+; putty script
+
+VadeSpam(){
+global
+Gui, Destroy
+Gui, add, Text,,ID:
+Gui, add, Edit,vId,
+Gui, add, Text,,Datum(yyyymmdd):
+Gui, add, Edit,vDatum,
+Gui, add, Text,,Uur tijdstip(uu):
+Gui, add, Edit,vTijd,
+Gui, Add, Button, gCopyspam, COPY
+Gui, Add, Button, gCopyspam2, COPY FOR MULTI-RECIPIENT
+Gui, Add, Button, gMailVade, START SCRIPT VOOR VADE E-MAIL
+Gui, Add, Button, gClose, CLOSE
+Gui, Show
+}
+
+Copyspam()
+{
+global
+Gui, Submit, NoHide ;betere manier dan control get
+Stringspam =
+(
+zgrep id=%Id% */applications-%Datum%%Tijd%00*
+)
+clipboard = %Stringspam%
+return
+}
+
+Copyspam2()
+{
+global
+Gui, Submit, NoHide ;betere manier dan control get
+Stringspam2 =
+(
+zgrep id=%Id% */messages-%Datum%%Tijd%00*
+)
+clipboard = %Stringspam2%
+return
+}
+
+
+; TrunkBox scriptµ
+
+TrunkBox(){
+Gui, Destroy
+Gui, Add, Text,,Operator:
+Gui, Add, DropDownList,vOperator,Proximus Fix||Proximus Mob|Orange Mob|Base Mob|Telenet Mob
+Gui, Add, Text,,Telefoonnummer:
+Gui, Add, Edit,vNummer
+Gui, Add, Button, gCopytrunk, COPY
+Gui, Add, Button, gClose, CLOSE
+Gui, Show
+}
+
+CopyTrunk()
+{
+global
+Gui, Submit, Nohide
+if (Operator = "Proximus Fix")
+{
+prefix = +329912
+}
+else if (Operator = "Proximus Mob")
+{
+prefix = +3299123
+}
+else if (Operator = "Orange Mob")
+{
+prefix = +3299122
+}
+else if (Operator = "Base Mob")
+{
+prefix = +3299121
+}
+else if (Operator = "Telenet Mob")
+{
+prefix = +3299124
+}
+
+stringtrunk =
+(
+%prefix%%Nummer%
+)
+clipboard = %stringtrunk%
+return
 }
 
 
@@ -472,6 +598,7 @@ SmsDTV(){
 Gui, Destroy
 Gui, add, Text,, Alle DTV sms:
 Gui, Add, Button, gZenderPakketActivatie, zenderpakket geactiveerd
+Gui, Add, Button, gTvBoxActivate, Tv-box Geactiveerd
 Gui, Add, Button, gSms, Ga terug
 Gui, Show
 }
@@ -511,6 +638,35 @@ clipboard := Stringzndrpakket
 return
 }
 
+
+; Tv-box activatie
+
+TvBoxActivate(){
+global
+Gui, Destroy
+Gui, add, Text,, Serienummer:
+Gui, Add, Edit, vSerienr, 
+Gui, Add, Button, gCopyTvBoxActivate, COPY
+Gui, Add, Button, gClose, CLOSE
+Gui, Show
+}
+
+CopyTvBoxActivate()
+{
+global
+Gui, Submit, NoHide ;betere manier dan control get
+Stringtvbox = 
+(
+Beste klant, 
+
+Uw nieuwe Tv-box %Serienr% werd geactiveerd. Binnen 30 minuten kan u gebruik maken van uw diensten
+
+Mvg, 
+Telenet
+)
+clipboard := Stringtvbox
+return
+}
 
 ; sms Telenfonie
 
@@ -586,3 +742,217 @@ clipboard := Stringtelov
 return
 }
 
+
+; Vragen Floorwalker script
+
+FwVraag(){
+global
+Gui, Destroy
+Gui, Add, Text,, BSS klantenlink?
+Gui, Add, Edit, vBsslink
+Gui, Add, Text,, OSS error/waiting link?
+Gui, Add, Edit, vOsslink
+Gui, Add, Text,, Klantennummer?
+Gui, Add, Edit, vKlantennummer
+Gui, Add, Text,, Beschrijving situatie?
+Gui, Add, Edit, r10 w380 vSituatiedescr
+Gui, Add, Text,, Reeds uitgecoerde acties?
+Gui, Add, Edit, r10 w380 vUitgevacties,
+Gui, Add, Text,, Waar zit je vast?
+Gui, Add, Edit, r10 w380 vStuckdescr,  
+Gui, Add, Button, gCopyFw, COPY
+Gui, Add, Button, gClose, CLOSE
+Gui, Show
+}
+
+CopyFw()
+{
+global
+Gui, Submit, Nohide
+Stringfw =
+(
+Bss klantenlink: %Bsslink%
+
+Oss error/waiting link: %Osslink%
+
+Klantennummer: %Klantennummer%
+
+Situatie beschrijving:
+%Situatiedescr%
+
+Acties die reeds zijn uitgevoerd.
+%Uitgevacties%
+
+Waar zit je vast?
+%Stuckdescr%
+)
+clipboard := Stringfw
+return
+}
+
+
+;Mail scripts
+
+MultiMail(){
+Gui, Destroy
+Gui, add, Text,, Algemeen
+Gui, Add, Button, gOloPx, Olo mail proximus
+Gui, Add, Button, gMailVade, Mail template voor vade secure
+Gui, Add, Button, gMailInfo, Mail template info klant
+Gui, Add, Button, gOriginTicket, Ga terug
+Gui, Show
+}
+
+
+; OLO px Mail
+
+OloPx(){
+global
+Gui, Destroy
+Gui, Add, Text,, Telefoonnummer?
+Gui, Add, Edit, vOlopxtelefoonnummer
+Gui, Add, Text,, SC id
+Gui, Add, Edit, vOloscid
+Gui, Add, Text,, Uw naam?
+Gui, Add, Edit, vOlonaam  
+Gui, Add, Button, gCopyOloPx, CREATE
+Gui, Add, Button, gClose, CLOSE
+Gui, Show
+}
+
+CopyOloPx()
+{
+global
+Gui, Submit, Nohide
+CheckOutlook()
+
+Subolopx = %Olopxtelefoonnumme%___Niet bereikbaar voor Proximus___%Oloscid%
+Stringolopx =
+(
+<p>Beste,</p>
+<p>Het nummer %Olopxtelefoonnummer% is niet bereikbaar voor Proximus abonnees.</p>
+<p>Kunnen jullie de routering nakijken?</p>
+<p>&nbsp;</p>
+<p>MVG</p>
+<p>%Olonaam%</p>
+)
+CompMail(Subolopx, Stringolopx, "Telenet_NP@telenetgroup.be", "car_np@proximus.com", "Telenet_NP@telenetgroup.be")
+return
+}
+
+
+; Mail vade
+
+MailVade(){
+global
+Gui, Destroy
+Gui, Add, Text,, E-mail adres of domein waar het over gaat?
+Gui, Add, Edit, vDomeinmail
+Gui, Add, Text,, E-mail adres van de afzender in het voorbeeld?
+Gui, Add, Edit, vMailsender
+Gui, Add, Text,, E-mail adres van de ontvanger in het voorbeeld?
+Gui, Add, Edit, vMailrec
+Gui, Add, Text,, Datum en tijdstip van het voorbeeld?
+Gui, Add, Edit, vDateandtime
+Gui, Add, Text,, Spamcause van het voorbeeld?
+Gui, Add, Edit, vSpamcause
+Gui, Add, Text,, Uw naaam?
+Gui, Add, Edit, vVadenaam
+Gui, Add, Button, gCopyVadeMail, CREATE
+Gui, Add, Button, gClose, CLOSE
+Gui, Show
+}
+
+CopyVadeMail()
+{
+global
+Gui, Submit, Nohide
+CheckOutlook()
+
+Subvade = Mails sent from %Domeinmail% are incorrectly marked as spam
+Stringvade =
+(
+<p>Hi</p>
+
+<p>Mails sent from the domain/e-mail %Domeinmail% are incorrectly marked as spam. Can you please check and correct this</p>
+
+<p>Example:</p>
+
+<p>Sender: %Mailsender%<br>
+Recipient: %Mailrecr%<br>
+Date: %Dateandtime%<br>
+Spam cause: %Spamcause%</p>
+
+<p>Decrypted:<br>
+!!!Plak hier de decrypted spamcause!!!</p>
+
+<p>With kind regards<br>
+%Vadenaam%</p>
+)
+CompMail(Subvade, Stringvade, "", "support@vadesecure.com", "")
+return
+}
+
+
+; Mail Info klant
+
+Mailinfo(){
+global
+Gui, Destroy
+Gui, Add, Text,,Welke info:
+Gui, Add, DropDownList,vInfo,MAC-adressen modem||Serienummer EOS|Serienummer SPDN|Login
+Gui, Add, Text,,Naam Klant:
+Gui, Add, Edit, vNaamkl
+Gui, Add, Button, gCopyInfoKlantMail, COPY
+Gui, Add, Button, gClose, CLOSE
+Gui, Show
+return
+}
+
+CopyInfoKlantMail()
+{
+global
+Gui, Submit, Nohide
+
+switch Info
+{
+case "MAC-adressen modem":
+	Info := "de MAC-adressen van uw Telenet modem nodig."
+	Location := "Deze kan u vinden op de sticker onderaan, de HFC MAC."
+	Requestedaction := "Als u een foto neemt en deze toevoegt als bijlage bij het antwoord op deze mail kunnen we uw Telenet diensten activeren."
+case "Serienummer EOS":
+	Info := "het serienummer van uw TV-Box nodig."
+	Location := "Deze kan u vinden op de witte sticker onderaan,  de CA ID."
+	Requestedaction := "Als u een foto neemt en deze toevoegt als bijlage bij het antwoord op deze mail kunnen we uw Telenet diensten activeren."
+case "Serienummer SPDN":
+	Info := "het serienummer van uw decoder nodig."
+	Location := "Deze kan u vinden op de witte sticker, achter STB CA serial number."
+	Requestedaction := "Als u een foto neemt en deze toevoegt als bijlage bij het antwoord op deze mail kunnen we uw Telenet diensten activeren."
+case "Login":
+	Info := "Uw Telenet login nodig."
+	Location :=""
+	Requestedaction := "Als u ons deze bezorgt met het anwoord op de mail kunne we uw Telenet dienst activeren."
+}
+
+
+Stringinfokl =
+(
+Hallo %Naamkl%
+
+Om je zo goed mogelijk verder te helpen, hebben we nog wat bijkomende informatie nodig. Bezorg het ons zo snel mogelijk.
+
+Om uw diensten te activeren hebben we %Info%
+%Location%
+
+%Requestedaction%
+
+Geef ons de gevraagde informatie:
+- Als antwoord op deze e-mail.
+
+
+Vriendelijke groeten,
+Telenet-klantendienst
+)
+clipboard := Stringinfokl
+return
+}
