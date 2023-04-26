@@ -66,6 +66,7 @@ Gui, Add, Button, gSms, SMS templates
 Gui, Add, Button, gMultiMail, Mail templates
 Gui, Add, Button, gFwVraag, Vragen Floorwalker
 Gui, Add, Button, gTrunkBox, Trunkboxen
+Gui, Add, Button, gMultiNP, NP
 Gui, Add, Button, gVadeSpam, Spamcause zoeken in Putty
 Gui, Show
 }
@@ -954,5 +955,338 @@ Vriendelijke groeten,
 Telenet-klantendienst
 )
 clipboard := Stringinfokl
+return
+}
+
+
+;NP scripts
+
+MultiNP(){
+Gui, Destroy
+Gui, add, Text,, Alle NP Templates:
+Gui, Add, Button, gRejectGrouping, template reject owv grouping 
+Gui, Add, Button, gRejectAdresCheck, template reject owv adrescheck
+Gui, add, Text,, duedate templates.
+Gui, Add, Button, gDuedateNew, template voor due date cases new
+Gui, Add, Button, gDuedateAccept, template voor order status npr/ accept
+Gui, Add, Button, gDuedateExec, template voor np opstarten exec verzonden
+Gui, add, Text,, LOA mail
+Gui, Add, Button, gLoaNl, Letter of agreement NL
+Gui, Add, Button, gLoaFr, Letter of agreement FR
+Gui, Add, Button, gOriginTicket, Ga terug
+Gui, Show
+}
+
+RejectGrouping(){
+global
+Gui, Destroy
+Gui, add, Text,, Nummer1
+Gui, Add, Edit, vNummer1,
+Gui, add, Text,, Nummer2
+Gui, Add, Edit, vNummer2,
+Gui, Add, Button, gCopyRejectNP, COPY
+Gui, Add, Button, gClose, CLOSE
+Gui, Show
+}
+
+CopyRejectNP(){
+global
+Gui, Submit, NoHide
+
+stringRejectNP =
+(
+
+We hebben een weigering ontvangen van Proximus voor het porteren van nummer : %Nummer1%.
+
+Reden van reject (weigering) : Onvolledige reeks.
+
+
+
+
+Klant heeft bij Proximus niet enkel het nummer %Nummer1% (nummer A) actief staan maar ook het nummer : %Nummer2% (nummer B).
+
+MAAR ... Wat moet er gebeuren met het nummer (nummer B) : %Nummer2%? 
+
+
+
+
+1. Mee naar Telenet? >>> Inboeken in Cafe. Laten weten of afwerken install nodig is of niet.
+
+2. Opzeggen bij Proximus? >>> Log info in de case. TBO doet nieuwe aanvraag.
+
+3. Actief houden bij Proximus? >>> Log info in de case. TBO doet nieuwe aanvraag.
+
+ 
+
+Let op! Je mag de nummer niet inboeken om achteraf op te zeggen!!! Dit geeft problemen voor in de toekomst.
+
+
+)
+clipboard := stringRejectNP
+return
+}
+
+
+; Rejectadrescheck
+
+RejectAdresCheck(){
+global
+Gui, Destroy
+Gui, add, Text,, Telefoonnummer
+Gui, Add, Edit, vTelefoonnummeradres,
+Gui, add, Text,, naam van de klant Proximus
+Gui, Add, Edit, vnaamadres1,
+Gui, add, Text,, Adres Proximus
+Gui, Add, Edit, vAdres1,
+Gui, add, Text,, naam van de klant Telenet
+Gui, Add, Edit, vnaamadres2,
+Gui, add, Text,, Adres Telenet
+Gui, Add, Edit, vAdres2
+Gui, Add, Button, gCopyRejectAdres, COPY
+Gui, Add, Button, gClose, CLOSE
+Gui, Show
+}
+
+CopyRejectAdres(){
+global
+Gui, Submit, NoHide
+
+stringRejectadres =
+(
+
+Klant meermaals proberen te bereiken ivm nummerportering : Telefoonnummer : %Telefoonnummeradres%
+
+Indien de klant binnen belt, dient er een controle te gebeuren van naam + adres!!!
+
+Voor de nummerportering te kunnen voltooien, hebben wij onderstaande gegevens nodig van de klant :
+
+ 
+
+Gegevens bij Proximus :
+Naam : %naamadres1%
+Adres : %Adres1%
+
+ 
+
+Gegevens bij ons :
+Naam : %naamadres2%
+Adres : %Adres2%
+
+ 
+
+!!! Vraag aan klant --> Kent onze klant bovenstaande klant? (gegevens van Proximus)
+
+Bijvoorbeeld:
+Dit kan de echtgenote zijn
+Heeft de klant eventueel een verhuis gehad?
+
+ 
+
+Gelieve dit zeker na te vragen aan de klant! Zonder deze info zal de nummerportering niet kunnen verder gezet worden.
+
+Heb je de case geaccepteerd? Geen nood! Je mag de case opnieuw dispatchen naar : TBO FNP ACK !!!
+
+Indien we nog steeds geen duidelijk info hierover ontvangen, zullen wij de klant een nieuw nummer geven + hiervan op de hoogte brengen per brief.
+
+ 
+
+Wij proberen de klant opnieuw te contacteren op (datum). Indien we de klant nog steeds niet kunnen bereiken, zullen wij de klant een nieuw nummer geven + hiervan op de hoogte brengen per mail.
+
+
+
+)
+clipboard := stringRejectadres
+return
+}
+
+; Duedatenew
+
+DuedateNew(){
+global
+Gui, Destroy
+Gui, add, Text,, Telefoonnummer
+Gui, Add, Edit, vTelefoonnummerddnew,
+Gui, add, Text,, due date
+Gui, Add, Edit, vDuedatenew,
+Gui, Add, Button, gCopyDdNew, COPY
+Gui, Add, Button, gClose, CLOSE
+Gui, Show
+}
+
+CopyDdNew(){
+global
+Gui, Submit, NoHide
+
+Stringddnew =
+(
+
+De nummerportering van het nummer %Telefoonnummerddnew% staat momenteel nog open.
+
+Nummerportering wordt aangevraagd door TBO
+
+Due Date = %Duedatenew%
+
+=> Dit is de opstartdatum van de nummeroverdracht. (indien we een accept ontvangen)
+
+=> PAS VANAF DEZE DATUM ZAL DE KLANT BEREIKBAAR ZIJN VOOR ALLE OPERATOREN OP DE AANSLUITING VAN TELENET!
+)
+clipboard := Stringddnew
+return
+}
+
+
+; Duedateaccept
+
+DuedateAccept(){
+global
+Gui, Destroy
+Gui, add, Text,, Telefoonnummer
+Gui, Add, Edit, vTelefoonnummerddaccept,
+Gui, add, Text,, np status
+Gui, Add, Edit, vnpstatusaccept
+Gui, add, Text,, due date
+Gui, Add, Edit, vDuedateaccept,
+Gui, Add, Button, gCopyDdAccept, COPY
+Gui, Add, Button, gClose, CLOSE
+Gui, Show
+}
+
+CopyDdAccept(){
+global
+Gui, Submit, NoHide
+
+Stringddaccept =
+(
+De nummerportering van het nummer %Telefoonnummerddaccept% staat momenteel nog open.
+
+Status order = %npstatusaccept%
+
+Due Date = %Duedateaccept%
+
+=> Dit is de opstartdatum van de nummeroverdracht. (indien we een accept ontvangen)
+
+=> PAS VANAF DEZE DATUM ZAL DE KLANT BEREIKBAAR ZIJN VOOR ALLE OPERATOREN OP DE AANSLUITING VAN TELENET!
+)
+clipboard := Stringddaccept
+return
+}
+
+; Duedateexec
+
+DuedateExec(){
+Gui, Destroy
+Gui, Add, Button, gCopyDdExec, COPY
+Gui, Add, Button, gClose, CLOSE
+Gui, Show
+}
+
+CopyDdExec(){
+
+Stringddexec =
+(
+
+Exec verzonden, hierdoor wordt de nummerportering naar Telenet opgestart.
+
+Van zodra de status op RFS sent staat, is de nummerportering volledig afgehandeld.
+
+=> PAS VANAF DAN ZAL DE KLANT BEREIKBAAR ZIJN VOOR ALLE OPERATOREN OP DE AANSLUITING VAN TELENET!
+
+)
+clipboard := Stringddexec
+return
+}
+
+
+; LOANL
+
+LoaNl(){
+global
+Gui, Destroy
+Gui, Add, Text,, Telefooonnummer?
+Gui, Add, Edit, vTelefoonnummer
+Gui, Add, Text,, Operator?
+Gui, Add, Edit, vOperator
+Gui, Add, Text,, Uw naam?
+Gui, Add, Edit, vNaam
+Gui, Add, Button, gCopyLoaNl, CREATE
+Gui, Add, Button, gClose, CLOSE
+Gui, Show
+}
+
+CopyLoaNl(){
+global
+Gui, Submit, Nohide
+CheckOutlook()
+
+Subloanl = Nummeroverdracht___ %Telefoonnummer%___Letter of agreement
+Stringloanl = 
+(
+<p>Beste mevrouw, mijnheer,</p>
+<p>&nbsp;</p>
+<p>U nam contact met ons op omdat u graag gebruik zou maken van de diensten van Telenet.</p>
+<p>&nbsp;</p>
+<p>Bij het nakijken van uw contract zijn wij tot de vaststelling gekomen dat de aanvraag van&nbsp;het nummer dat u ons doorgaf, %Telefoonnummer%, werd geweigerd door %Operator%. Om de nummer overdracht te kunnen voltooien dient u ons het document in bijlage, ingevuld terug te bezorgen.</p>
+<p>Als dit niet uw nummer is, vragen wij u zo snel mogelijk contact met ons op te nemen op het nummer 015 66 66 66.</p>
+<p>&nbsp;</p>
+<p>Wij hopen dat wij u hiermee voldoende informatie hebben gegeven.</p>
+<p>&nbsp;</p>
+<p>Hebt u nog vragen? Neem alvast een kijkje op <a class="external-link" href="http://www.telenet.be/klantenservice" rel="nofollow">www.telenet.be/klantenservice</a>.</p>
+<p>U kunt er 24 uur op 24 informatie opzoeken of contact met ons opnemen via een webformulier op <a class="external-link" href="http://www.contact.telenet.be/" rel="nofollow">www.contact.telenet.be</a>.</p>
+<p>&nbsp;</p>
+<p>Met vriendelijke groeten,</p>
+<p>&nbsp;</p>
+<p>%Naam%</p>
+<p>Telenet Klantendienst</p>
+</div>
+)
+CompMail(Subloanl, Stringloanl, "technischehulp@telenetgroup.be", "", "technischehulp@telenetgroup.be")
+return
+}
+
+
+; LOAFR
+
+LoaFr(){
+global
+Gui, Destroy
+Gui, Add, Text,, Telefooonnummer?
+Gui, Add, Edit, vTelefoonnummer
+Gui, Add, Text,, Operator?
+Gui, Add, Edit, vOperator
+Gui, Add, Text,, Uw naam?
+Gui, Add, Edit, vNaam
+Gui, Add, Button, gCopyLoaFr, CREATE
+Gui, Add, Button, gClose, CLOSE
+Gui, Show
+}
+
+CopyLoaFr(){
+global
+Gui, Submit, Nohide
+CheckOutlook()
+
+Subloafr = portage du num&eacute;ro___ %Telefoonnummer%___Letter of agreement
+Stringloafr = 
+(
+<p>Ch&egrave;re Madame, Monsieur,</p>
+<p>&nbsp;</p>
+<p>Vous avez pris contact avec nous car vous souhaitez utiliser les services de telenet.</p>
+<p>&nbsp;</p>
+<p>En examinant votre contrat, nous avons constat&eacute;s que la demande pour le num&eacute;ro que vous avez communiqu&eacute;,%Telefoonnummer%, a &eacute;t&eacute; refus&eacute;e par %Operator%. Afin de compl&eacute;ter la portabilit&eacute; de num&eacute;ro, merci de remplir le document en annexe et de le nous retourner.</p>
+<p>&nbsp;</p>
+<p>Si ceci n&rsquo;est pas votre num&eacute;ro, nous vous demandons de nous contacter au plus vite possible au 015 66 66 66.</p>
+<p>&nbsp;</p>
+<p>Nous esp&eacute;rons de vous avoir fourni tous les informations n&eacute;cessaires.</p>
+<p>&nbsp;</p>
+<p>Encore des questions ? Nous vous invitons de visiter <a class="external-link" href="https://www2.telenet.be/fr/serviceclient" rel="nofollow">https://www2.telenet.be/fr/serviceclient</a></p>
+<p>&nbsp;</p>
+<p>Vous y trouverez des renseignement 24 heures sur 24. Alternativement, vous pouvez nous contacter utilisant le formulaire web sur <a class="external-link" href="http://www.contact.telenet.be/" rel="nofollow">www.contact.telenet.be</a>.</p>
+<p>&nbsp;</p>
+<p>Bien &agrave; vous,</p>
+<p>&nbsp;</p>
+<p>%Naam%</p>
+<p>Service Client Telenet</p>
+)
+CompMail(Subloafr, Stringloafr, "technischehulp@telenetgroup.be", "", "technischehulp@telenetgroup.be")
 return
 }
