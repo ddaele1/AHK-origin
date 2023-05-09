@@ -6,6 +6,14 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #Hotstring C R
 
+; remove whitspace in clipborad
+
+F2::
+Clipboard := StrReplace(Clipboard, A_Space, "")
+Clipboard := StrReplace(Clipboard, A_Tab, "")
+return
+
+
 ; start Gui
 
 ::+op::
