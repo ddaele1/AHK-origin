@@ -177,6 +177,7 @@ ItTicket()
 global
 Gui, Destroy
 Gui, Add, Checkbox, vCoos, COOS?
+Gui, Add, Checkbox, vSoho, SOHO COOS?
 Gui, Add, Checkbox, vSheet, Sheet?
 Gui, Add, Text,, Telenet of BASE?
 Gui, Add, DropDownList, vTelbase, TELENET||BASE
@@ -207,33 +208,44 @@ global
 
 Gui, Submit, Nohide
 
-
-if (Coos = 1)
-{ 
-Coos := "/COOS"
-}
-else
+if (Soho =1)
 {
+Soho := "/SOHO COOS"
 Coos := ""
-}
-
-if (Sheet = 1)
-{
-	if (Coos = "/COOS"){
-	Sheet := " sheet"
-	}
-	else{
-	Sheet := "/sheet"
-	}
+Sheet:= ""
 }
 else
 {
-Sheet:= ""
+	Soho := ""
+	if (Coos = 1)
+	{
+	Coos := "/COOS"
+	}
+	else
+	{
+	Coos := ""
+	}
+
+	if (Sheet = 1)
+	{
+		if (Coos = "/COOS")
+		{
+		Sheet := " sheet"
+		}
+		else
+		{
+		Sheet := "/sheet"
+		}
+	}
+	else
+	{
+	Sheet:= ""
+	}
 }
 
 Stringmob =
 (
-Origin%Coos%%Sheet%/%Telbase% %Service%/Non-Billing/%Klantennummer%/%Scid%/%Problemshort%
+Origin%Soho%%Coos%%Sheet%/%Telbase% %Service%/Non-Billing/%Klantennummer%/%Scid%/%Problemshort%
 
 - Regarding customer: %Klantennummer%
 - customerlink BSS: %LinkBss%
