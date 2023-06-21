@@ -69,7 +69,7 @@ OriginTicket()
 Gui, Destroy
 Gui, Add, Text,, Welk scriptje wil je starten?
 Gui, Add, Button, gItTicket, IT tickets
-Gui, Add, Button, gCaseTemplate, SC template
+Gui, Add, Button, gCaseTemplateLanding, SC template
 Gui, Add, Button, gSms, SMS templates
 Gui, Add, Button, gMultiMail, Mail templates
 Gui, Add, Button, gFwVraag, Vragen Floorwalker
@@ -265,6 +265,33 @@ return
 
 
 ; Service case script
+
+; landing page
+CaseTemplateLanding()
+{
+Gui, Destroy
+Gui, Add, Button, gCaseTemplate, Full Template
+Gui, Add, Button, gAppointmentCaseTemplate, Parent SC Appointment COPY
+Gui, add, Text,, 
+Gui, Add, Button, gOriginTicket, BACK
+Gui, Show
+}
+
+
+;Parent SC Appointment
+
+AppointmentCaseTemplate()
+{
+Stringappointmentparent =
+(
+Deze SC heeft opvolging gekregen via TBO in navolging van een techniekerinterventie. Het probleem is verholpen en de klant is op de hoogte gesteld.
+)
+clipboard := Stringappointmentparent
+return
+}
+
+
+; full template
 
 CaseTemplate()
 {
