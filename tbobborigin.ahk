@@ -199,6 +199,8 @@ Gui, Add, Text,, Uitgebreide probleembeschrijving/Stappen?
 Gui, Add, Edit, r10 w380 vExtdescr, 
 Gui, Add, Button, gCopyTicket, COPY
 Gui, Add, Button, gClose, CLOSE
+;speciaal voor Jeroen Dehandschutter
+Gui, Add, Button, gOriginTicket, Ga Terug
 Gui, Show
 }
 
@@ -362,7 +364,7 @@ SmsAlgemeen()
 Gui, Destroy
 Gui, add, Text,, Alle algemene sms:
 Gui, Add, Button, gCallBack, callback sms
-Gui, Add, Button, gModemActivate, modem geactiveerd
+Gui, Add, Button, gModemActivate, modem geactiveerd/verhuis
 Gui, Add, Button, gPakketAanpassing, pakketwijziging
 Gui, Add, Button, gItTicketSms, IT ticket
 Gui, Add, Button, gRepairCallback, callback repair.
@@ -414,6 +416,7 @@ Gui, Destroy
 Gui, add, Text,, Modemmac:
 Gui, Add, Edit, vModemmac, 
 Gui, Add, Button, gCopymodemActivate, COPY
+Gui, Add, Button, gCopyVerhuis, VERHUIS
 Gui, Add, Button, gClose, CLOSE
 Gui, Show
 }
@@ -432,6 +435,23 @@ Mvg,
 Telenet
 )
 clipboard := Stringmodem
+return
+}
+
+CopyVerhuis()
+{
+global
+Stringverhuis = 
+(
+Beste klant, 
+
+Uw Telenet diensten werden succesvol geactiveerd op het nieuwe adres.
+Deze zijn gebruiksklaar binnen de 30 minuten.
+
+Mvg, 
+Telenet
+)
+clipboard := Stringverhuis
 return
 }
 
